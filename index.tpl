@@ -19,14 +19,14 @@
 
   <table cellspacing="1" cellpadding="0" class="list_table margin_bottom_large">
   <tr>
-    <th class="pad_left" style="text-align:left">{$L.phrase_change_submission_id}</th>
+    <th class="pad_left_small" style="text-align:left">&nbsp;{$L.phrase_change_submission_id}</th>
   </tr>
   <tr>
     <td valign="top">
       <form action="{$same_page}" id="change_submission_id_form" method="post">
         <table cellspacing="2" cellpadding="1">
         <tr>
-          <td width="260">{$L.phrase_select_form}</td>
+          <td width="260">&nbsp;{$L.phrase_select_form}</td>
           <td>
             <select name="form_id">
               {foreach from=$dropdown_info key=k item=i}
@@ -36,7 +36,7 @@
           </td>
         </tr>
         <tr>
-          <td valign="top">{$L.phrase_change_next_submission_id_to_c}</td>
+          <td valign="top">&nbsp;{$L.phrase_change_next_submission_id_to_c}</td>
           <td>
             <input type="text" name="next_submission_id" id="next_submission_id" size="10" />
           </td>
@@ -52,7 +52,7 @@
 
   <table cellspacing="1" cellpadding="0" class="list_table margin_bottom_large">
   <tr>
-    <th class="pad_left" style="text-align:left">{$L.phrase_delete_form_submissions_and_reset}</th>
+    <th class="pad_left" style="text-align:left">&nbsp;{$L.phrase_delete_form_submissions_and_reset}</th>
   </tr>
   <tr>
     <td valign="top">
@@ -61,7 +61,7 @@
 
         <table cellspacing="2" cellpadding="1">
         <tr>
-          <td width="260">{$L.phrase_select_form}</td>
+          <td width="260">&nbsp;{$L.phrase_select_form}</td>
           <td>
             <select name="form_id">
               {foreach from=$dropdown_info key=k item=i}

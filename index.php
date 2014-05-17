@@ -12,7 +12,7 @@ if (isset($request["update"]))
   $next_submission_id = $request["next_submission_id"];
 
   // add a little server-side check, just in case!
-  if (empty($next_submission_id) && $next_submission_id !== 0)
+  if (empty($next_submission_id) && $next_submission_id !== "0")
   {
     $g_success = true;
     $g_message = $L["validation_no_submission_id"];
@@ -30,14 +30,6 @@ else if (isset($request["delete"]))
 {
   $form_id = $request["form_id"];
   mysql_query("TRUNCATE TABLE {$g_table_prefix}form_{$form_id}");
-
-  // this is klutzy. It should be moved into a separate function in the Core.
-  $form_fields = ft_get_form_fields($form_id, array("include_field_type_info" => true));
-  foreach ($form_fields as $field_info)
-  {
-    $field_id = $field_info["field_id"];
-    mysql_query("DELETE FROM {$g_table_prefix}field_settings WHERE field_id = $field_id");
-  }
 
   $g_success = true;
   $g_message = $L["notify_form_submissions_deleted"];
