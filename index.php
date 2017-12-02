@@ -1,75 +1,83 @@
 <?php
 
 require_once("../../global/library.php");
-ft_init_module_page();
 
-$request = array_merge($_POST, $_GET);
+use FormTools\Core;
+use FormTools\Forms;
+use FormTools\Modules;
+use PDO;
+
+$module = Modules::initModulePage("admin");
+$L = $module->getLangStrings();
+$LANG = Core::$L;
+$db = Core::$db;
 
 // change the next submission ID counter
-if (isset($request["update"]))
-{
-  $form_id = $request["form_id"];
-  $next_submission_id = $request["next_submission_id"];
+$success = true;
+$message = "";
+if (isset($request["update"])) {
+    $form_id = $request["form_id"];
+    $next_submission_id = $request["next_submission_id"];
 
-  // add a little server-side check, just in case!
-  if (empty($next_submission_id) && $next_submission_id !== "0")
-  {
-    $g_success = true;
-    $g_message = $L["validation_no_submission_id"];
-  }
-  else
-  {
-    mysql_query("ALTER TABLE {$g_table_prefix}form_{$form_id} AUTO_INCREMENT = $next_submission_id");
-    $g_success = true;
-    $g_message = $L["notify_submission_id_changed"];
-  }
-}
+    // add a little server-side check, just in case!
+    if (empty($next_submission_id) && $next_submission_id !== "0") {
+        $success = true;
+        $message = $L["validation_no_submission_id"];
+    } else {
+        $db->query("ALTER TABLE {PREFIX}form_{$form_id} AUTO_INCREMENT = $next_submission_id");
+        $db->execute();
+        $success = true;
+        $message = $L["notify_submission_id_changed"];
+    }
+} // empty the table, resetting the submission ID counter
+else {
+    if (isset($request["delete"])) {
+        $form_id = $request["form_id"];
+        $db->query("TRUNCATE TABLE {PREFIX}form_{$form_id}");
+        $db->execute();
 
-// empty the table, resetting the submission ID counter
-else if (isset($request["delete"]))
-{
-  $form_id = $request["form_id"];
-  mysql_query("TRUNCATE TABLE {$g_table_prefix}form_{$form_id}");
-
-  $g_success = true;
-  $g_message = $L["notify_form_submissions_deleted"];
+        $success = true;
+        $message = $L["notify_form_submissions_deleted"];
+    }
 }
 
 
 // retrieve all information that the template needs
-$forms = ft_get_forms();
+$forms = Forms::getForms();
 $dropdown_info = array();
-foreach ($forms as $form_info)
-{
-  $form_id = $form_info["form_id"];
+foreach ($forms as $form_info) {
+    $form_id = $form_info["form_id"];
 
-  if ($form_info["is_complete"] == "no")
-    continue;
+    if ($form_info["is_complete"] == "no") {
+        continue;
+    }
 
-  // now find the highest submission ID from this form
-  $query = mysql_query("
-    SELECT submission_id
-    FROM   {$g_table_prefix}form_{$form_id}
-    ORDER BY submission_id DESC
-    LIMIT 1
-      ");
+    // now find the highest submission ID from this form
+    $db->query("
+        SELECT submission_id
+        FROM   {PREFIX}form_{$form_id}
+        ORDER BY submission_id DESC
+        LIMIT 1
+    ");
+    $db->execute();
 
-  $count = "unknown";
-  if (mysql_num_rows($query) == 1)
-  {
-    $info = mysql_fetch_assoc($query);
-    $count = $info["submission_id"];
-  }
+    $count = "unknown";
+    if ($db->numRows() == 1) {
+        $info = $db->fetch(PDO::FETCH_COLUMN);
+        $count = $info["submission_id"];
+    }
 
-  $dropdown_info[$form_id] = "{$form_info["form_name"]} ($count)";
+    $dropdown_info[$form_id] = "{$form_info["form_name"]} ($count)";
 }
 
-// ----------------------------------------------------------------------------------
-
 // store the information that we're going to pass to the templates in $theme_vars
-$page_vars = array();
-$page_vars["dropdown_info"] = $dropdown_info;
-$page_vars["head_js"] =<<< EOF
+$page_vars = array(
+    "g_success" => $success,
+    "g_message" => $message,
+    "dropdown_info" => $dropdown_info
+);
+
+$page_vars["head_js"] = <<< EOF
 $(function() {
   // form 1: check the user has entered a valid submission ID
   $("#change_submission_id_form").bind("submit", function(e) {
@@ -107,4 +115,4 @@ $(function() {
 EOF;
 
 // load the template page with our custom info
-ft_display_module_page("index.tpl", $page_vars);
+$module->displayPage("templates/index.tpl", $page_vars);
