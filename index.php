@@ -5,7 +5,6 @@ require_once("../../global/library.php");
 use FormTools\Core;
 use FormTools\Forms;
 use FormTools\Modules;
-use PDO;
 
 $module = Modules::initModulePage("admin");
 $L = $module->getLangStrings();
@@ -63,8 +62,7 @@ foreach ($forms as $form_info) {
 
     $count = "unknown";
     if ($db->numRows() == 1) {
-        $info = $db->fetch(PDO::FETCH_COLUMN);
-        $count = $info["submission_id"];
+        $count = $db->fetch(PDO::FETCH_COLUMN);
     }
 
     $dropdown_info[$form_id] = "{$form_info["form_name"]} ($count)";

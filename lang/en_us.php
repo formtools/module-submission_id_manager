@@ -1,15 +1,5 @@
 <?php
 
-/*
-Form Tools - Module Language File
----------------------------------
-
-File created: Oct 24th 2007, 2:46 AM
-
-If you would like to help translate Form Tools, please visit:
-http://www.formtools.org/translations/
-*/
-
 $L = array();
 
 // REQUIRED fields

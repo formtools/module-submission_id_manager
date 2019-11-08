@@ -1,6 +1,10 @@
 ## Submission ID Manager
 
-This simple module lets you modify or reset the submission IDs for your forms. Note you can only reset the submission ID count for empty forms, and you cannot change the submission ID count to a number lower than the highest current submission ID. The module lets you change the start number, so the submission ID would start at 10,000, for example.
+This simple module lets you modify or reset the submission IDs for your forms, so you can set the next submission ID
+to start from, say, 10,000, instead of 0.
+
+Note you can only reset the submission ID count for empty forms, and you cannot change the submission ID count to a
+number lower than the highest current submission ID. 
 
 
 ### Documentation
